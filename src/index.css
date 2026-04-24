@@ -1,0 +1,110 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    font-family: 'Pretendard', system-ui, -apple-system, sans-serif;
+    color-scheme: light;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html, body, #root {
+    height: 100%;
+    background: #FFFFFF;
+  }
+
+  body {
+    background: #FFFFFF;
+    color: #1A1A18;
+  }
+
+  /* Force no italic anywhere */
+  i, em, .italic { font-style: normal !important; }
+
+  /* Clean, modern headings - bold and tight */
+  h1, h2, h3, h4 {
+    letter-spacing: -0.02em;
+    font-weight: 700;
+  }
+
+  ::selection {
+    background: rgba(255, 176, 0, 0.2);
+    color: #1A1A18;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #FFFFFF;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #E5E5E0;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #C8C8BC;
+  }
+}
+
+@layer components {
+  /* Card panel — cleaner, more elevated feel */
+  .panel {
+    @apply relative bg-white rounded-xl;
+    box-shadow:
+      0 0 0 1px rgba(26, 26, 24, 0.04),
+      0 1px 2px rgba(26, 26, 24, 0.03);
+  }
+
+  .panel-elevated {
+    @apply relative bg-white rounded-xl;
+    box-shadow:
+      0 0 0 1px rgba(26, 26, 24, 0.04),
+      0 2px 4px rgba(26, 26, 24, 0.03),
+      0 8px 24px -6px rgba(26, 26, 24, 0.06);
+  }
+
+  /* Monospace micro-label */
+  .micro-label {
+    @apply font-mono text-2xs uppercase tracking-[0.18em] text-paper-500 font-medium;
+  }
+
+  /* Clean background - no grid */
+  .grid-bg {
+    background: #FFFFFF;
+  }
+
+  /* Signal pulse indicator */
+  .signal-dot {
+    @apply relative inline-block w-2 h-2 rounded-full;
+  }
+  .signal-dot::before {
+    content: '';
+    @apply absolute inset-0 rounded-full;
+    animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+    background: currentColor;
+    opacity: 0.4;
+  }
+
+  /* Hairline divider */
+  .hairline {
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, #D8D8CE 50%, transparent 100%);
+  }
+
+  /* Tabular nums */
+  .numeric {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum' 1;
+  }
+}
+
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
