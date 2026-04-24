@@ -11,7 +11,7 @@ import DateRangeFilter, { getDefaultRange, type DateRange } from '../components/
 import CustomerUploadModal from '../components/CustomerUploadModal';
 import ConnectionStatus from '../components/ConnectionStatus';
 import { useCustomers, clearCustomersCache } from '../hooks/useData';
-import { ResponsiveContainer, Tooltip, AreaChart, Area, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { ResponsiveContainer, Tooltip, AreaChart, Area, XAxis, YAxis, CartesianGrid, PieChart, Pie, Cell } from 'recharts';
 
 type DateField = 'signup_date' | 'last_purchase_date';
 type AppFilter = 'all' | 'installed' | 'not_installed';
@@ -293,24 +293,59 @@ export default function CustomersPage() {
           })}
         </div>
 
-        <div className="panel p-5">
-          <div className="flex items-baseline justify-between mb-3">
+<div className="panel p-5">
+          <div className="flex items-baseline justify-between mb-4">
             <h4 className="text-sm font-bold text-paper-900">등급 비중</h4>
             <span className="text-2xs font-mono text-paper-500">총 {formatNumber(kpi.total)}명</span>
           </div>
-          <div className="flex w-full h-3 rounded-full overflow-hidden bg-paper-100 mb-3">
-            {gradeDistribution.map(g => (
-              <div key={g.grade} className="transition-all hover:brightness-110" style={{ width: `${g.pct}%`, background: g.color }} title={`${g.grade}: ${formatNumber(g.count)}명 (${g.pct.toFixed(1)}%)`} />
-            ))}
-          </div>
-          <div className="flex flex-wrap gap-x-5 gap-y-2 text-xs">
-            {gradeDistribution.map(g => (
-              <div key={g.grade} className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full" style={{ background: g.color }} />
-                <span className="text-paper-700 font-medium">{g.grade}</span>
-                <span className="font-mono text-paper-500 numeric">{g.pct.toFixed(1)}%</span>
+          <div className="flex items-center gap-6">
+            <div className="w-44 h-44 relative shrink-0">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={gradeDistribution}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={50}
+                    outerRadius={78}
+                    paddingAngle={2}
+                    dataKey="count"
+                  >
+                    {gradeDistribution.map((entry, idx) => (
+                      <Cell key={idx} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{ background: '#FFFFFF', border: '1px solid #E5E5E5', borderRadius: 6, fontSize: 12, boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
+                    formatter={(value: any, _name: any, props: any) => [`${formatNumber(value)}명 (${props.payload.pct.toFixed(1)}%)`, props.payload.grade]}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                <div className="text-lg font-bold text-paper-900 numeric">
+                  {formatNumber(kpi.total)}
+                </div>
+                <div className="text-2xs text-paper-500 font-mono">총 고객</div>
               </div>
-            ))}
+            </div>
+            <div className="flex-1 space-y-1.5 min-w-0">
+              {gradeDistribution.map(g => (
+                <div key={g.grade} className="flex items-center justify-between gap-2 text-xs">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <div className="w-2 h-2 rounded-full shrink-0" style={{ background: g.color }} />
+                    <span className="text-paper-800 font-medium truncate">{g.grade}</span>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="font-mono numeric text-paper-900 font-semibold">
+                      {formatNumber(g.count)}
+                    </span>
+                    <span className="font-mono numeric text-paper-500 w-12 text-right">
+                      {g.pct.toFixed(1)}%
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
